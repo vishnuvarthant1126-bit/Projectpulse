@@ -1,5 +1,7 @@
 # Render Blueprint for the public demo API (read-only sample project, no API keys needed).
 # Render dashboard -> New -> Blueprint -> pick this repo -> Apply.
+# LLM_* settings are deliberately not set here: add them in the dashboard (Environment)
+# so a Blueprint sync never overwrites them. Without them the demo runs with no API key.
 services:
   - type: web
     name: projectpulse-api
@@ -13,8 +15,6 @@ services:
     envVars:
       - key: PUBLIC_DEMO
         value: "true"
-      - key: LLM_PROVIDER
-        value: none
       - key: PORT
         value: "8000"
       - key: DATA_DIR

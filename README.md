@@ -68,6 +68,16 @@ LLM_MODEL=claude-sonnet-5       # any model your provider offers
 LLM_API_KEY=...                 # read by the backend only; never sent to the browser
 ```
 
+**Free option, Gemini:** Google AI Studio keys have a free tier (free-tier prompts may be used by Google to improve its
+products). Use the OpenAI-compatible endpoint:
+
+```ini
+LLM_PROVIDER=openai
+LLM_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai
+LLM_MODEL=gemini-3.8-flash
+LLM_API_KEY=...                 # from aistudio.google.com
+```
+
 Anthropic calls use the Messages API with JSON-schema structured output (`output_config.format`).
 OpenAI-compatible calls use `response_format: json_schema`. Set `LLM_BASE_URL` for vLLM, Ollama
 and similar servers.
@@ -168,7 +178,7 @@ All settings are environment variables (see [`.env.example`](.env.example)). The
 ## Tests
 
 ```bash
-cd backend && pytest            # 55 tests, about 3 s; uses a deterministic hash embedder, no network
+cd backend && pytest            # 59 tests, about 3 s; uses a deterministic hash embedder, no network
 ruff check app tests
 cd ../frontend && npm run lint && npx tsc --noEmit && npm run build
 ```
@@ -181,6 +191,7 @@ cd ../frontend && npm run lint && npx tsc --noEmit && npm run build
 | `test_retrieval.py` | RRF maths, identifier tokenisation, chunk offsets and overlap, exact-ID ranking, rank fields per mode, dedup, plan/update and latest-update coverage, documents awaiting review not searchable, doc-type changes |
 | `test_upload.py` | Type, size, magic-byte and binary checks; scanned-PDF message; date detection and review flow; page and heading extraction; sample-project idempotency; config never exposes secrets |
 | `test_public_demo.py` | Sample preloaded and the only listed project; every write returns 403; per-visitor and global rate limits |
+| `test_llm_providers.py` | OpenAI-compatible provider (OpenAI, Gemini, vLLM): falls back from JSON-schema mode to JSON mode to plain output on HTTP 400; readable rate-limit and auth errors |
 | `test_eval_dataset.py` | 30 questions, every supporting quote exists in its document, metric maths |
 
 ## Evaluation

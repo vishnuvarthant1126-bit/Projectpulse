@@ -65,26 +65,45 @@ class OpenAICompatibleLLM:
         self.headers = {"Authorization": f"Bearer {s.llm_api_key.get_secret_value() if s.llm_api_key else ''}"}
 
     def complete_json(self, system: str, user: str, schema: dict[str, Any]) -> str:
-        body = {
-            "model": self.s.llm_model,
-            "temperature": self.s.llm_temperature,
-            "max_tokens": self.s.llm_max_tokens,
-            "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}],
-            "response_format": {
-                "type": "json_schema",
-                "json_schema": {"name": "answer", "schema": schema, "strict": True},
-            },
-        }
-        try:
-            r = httpx.post(self.url, headers=self.headers, json=body, timeout=self.s.llm_timeout_s)
-        except httpx.HTTPError as exc:
-            raise LLMError(f"Could not reach the answer model: {type(exc).__name__}") from exc
-        if r.status_code >= 400:
-            raise LLMError(f"Answer model returned HTTP {r.status_code}")
-        msg = r.json()["choices"][0]["message"]
-        if msg.get("refusal"):
-            raise LLMError("The answer model declined to answer this request.")
-        return msg.get("content") or ""
+        """Ask for strict JSON-schema output first. Some compatible servers (e.g. Gemini's
+        OpenAI endpoint, older vLLM/Ollama builds) reject parts of that request with HTTP 400,
+        so fall back to plain JSON mode with the schema in the prompt, then to no
+        response_format at all. The backend validates the result either way."""
+        schema_hint = "\n\nReturn only a JSON object that matches this JSON schema:\n" + json.dumps(schema)
+        attempts = [
+            (system, {"type": "json_schema", "json_schema": {"name": "answer", "schema": schema, "strict": True}}),
+            (system + schema_hint, {"type": "json_object"}),
+            (system + schema_hint, None),
+        ]
+        last_status = None
+        for sys_prompt, response_format in attempts:
+            body: dict[str, Any] = {
+                "model": self.s.llm_model,
+                "temperature": self.s.llm_temperature,
+                "max_tokens": self.s.llm_max_tokens,
+                "messages": [{"role": "system", "content": sys_prompt}, {"role": "user", "content": user}],
+            }
+            if response_format:
+                body["response_format"] = response_format
+            try:
+                r = httpx.post(self.url, headers=self.headers, json=body, timeout=self.s.llm_timeout_s)
+            except httpx.HTTPError as exc:
+                raise LLMError(f"Could not reach the answer model: {type(exc).__name__}") from exc
+            if r.status_code == 400:
+                last_status = 400
+                continue  # try a simpler output mode
+            if r.status_code == 429:
+                raise LLMError("The answer model is busy (rate limit reached). Please try again in a minute.")
+            if r.status_code >= 400:
+                raise LLMError(f"Answer model returned HTTP {r.status_code}")
+            data = r.json()
+            if isinstance(data, list):  # some gateways wrap the response in a list
+                data = data[0]
+            msg = data["choices"][0]["message"]
+            if msg.get("refusal"):
+                raise LLMError("The answer model declined to answer this request.")
+            return msg.get("content") or ""
+        raise LLMError(f"Answer model returned HTTP {last_status}")
 
 
 def build_llm(s: Settings) -> LLM | None:

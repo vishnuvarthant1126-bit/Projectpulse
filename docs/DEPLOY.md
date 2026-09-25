@@ -66,7 +66,11 @@ Free-tier notes:
 
 ## Optional: live AI answers
 
-Set `LLM_PROVIDER`, `LLM_MODEL` and `LLM_API_KEY` on the Render service. Visitors would then
+Set `LLM_PROVIDER`, `LLM_MODEL` and `LLM_API_KEY` (plus `LLM_BASE_URL` for Gemini or other
+OpenAI-compatible servers) in the Render service's **Environment** tab. For a free option, use a
+Google AI Studio key with `LLM_PROVIDER=openai`,
+`LLM_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai` and
+`LLM_MODEL=gemini-3.8-flash`, and set `ASK_RATE_GLOBAL_PER_MIN=10` to stay within free-tier limits. Visitors would then
 use your key. The demo rate-limits questions (10 per visitor per minute and 120 per minute
 overall, set with `ASK_RATE_PER_CLIENT_PER_MIN` and `ASK_RATE_GLOBAL_PER_MIN`), but you should
 also set a spending limit with your provider.
