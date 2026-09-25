@@ -1,0 +1,14 @@
+{
+  "project": {
+    "name": "Project Beacon (sample)",
+    "description": "Fictional warehouse-visibility project at Kestrel Freight. Every person, company and date in these documents is invented for demonstration."
+  },
+  "documents": [
+    {"file": "01_beacon_project_plan_v1.pdf", "doc_type": "original_plan", "reporting_date": "2026-01-12"},
+    {"file": "02_weekly_status_2026-02-06.md", "doc_type": "progress_update", "reporting_date": "2026-02-06"},
+    {"file": "03_architecture_review_2026-02-11.md", "doc_type": "meeting_notes", "reporting_date": "2026-02-11"},
+    {"file": "04_weekly_status_2026-02-20.md", "doc_type": "progress_update", "reporting_date": "2026-02-20"},
+    {"file": "05_steering_committee_2026-03-04.md", "doc_type": "meeting_notes", "reporting_date": "2026-03-04"},
+    {"file": "06_weekly_status_2026-03-06.md", "doc_type": "progress_update", "reporting_date": "2026-03-06"}
+  ]
+}

@@ -1,0 +1,21 @@
+# Render Blueprint for the public demo API (read-only sample project, no API keys needed).
+# Render dashboard -> New -> Blueprint -> pick this repo -> Apply.
+services:
+  - type: web
+    name: projectpulse-api
+    runtime: docker
+    plan: free
+    region: singapore
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    autoDeployTrigger: commit
+    envVars:
+      - key: PUBLIC_DEMO
+        value: "true"
+      - key: LLM_PROVIDER
+        value: none
+      - key: PORT
+        value: "8000"
+      - key: DATA_DIR
+        value: /data

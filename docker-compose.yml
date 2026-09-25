@@ -1,0 +1,31 @@
+# Local, single-user setup. Only the web UI is published, and only on localhost.
+# The API has no authentication, so it stays on the internal Docker network.
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DATA_DIR: /data
+      CORS_ORIGINS: '["http://localhost:3000"]'
+    volumes:
+      - projectpulse-data:/data
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+    environment:
+      BACKEND_URL: http://backend:8000
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  projectpulse-data:

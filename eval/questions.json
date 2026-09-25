@@ -1,0 +1,199 @@
+{
+  "_about": "ProjectPulse evaluation set v1: 30 questions over the fictional Project Beacon sample documents. Reference answers and supporting passages were written by hand for human review. A supporting passage is an exact quote (compared case- and whitespace-insensitively) from the named document. Retrieval relevance labels are derived from these quotes: a chunk is relevant to a question if it contains at least one of the question's supporting quotes.",
+  "questions": [
+    {"id": "E01", "category": "exact", "answerable": true, "expected_behavior": "answer",
+     "question": "What is ticket BCN-201?",
+     "reference_answer": "BCN-201 tracks the IT Security review of the SSO integration (blocker B-3). It was submitted on 18 February 2026, started on 2 March 2026, and is expected to finish around 20 March 2026.",
+     "supporting": [
+       {"doc": "04_weekly_status_2026-02-20.md", "quote": "The SSO integration cannot be enabled until IT Security completes its review, tracked as ticket BCN-201."},
+       {"doc": "05_steering_committee_2026-03-04.md", "quote": "the IT Security review of the SSO integration (BCN-201) started on 2 March 2026"}
+     ]},
+    {"id": "E02", "category": "exact", "answerable": true, "expected_behavior": "answer",
+     "question": "What is vendor ticket SP-7781 about, and was it closed?",
+     "reference_answer": "SP-7781 was the ScanPoint support ticket for the missing Events API v3 credentials (blocker B-1). It was closed when the credentials were provisioned on 17 February 2026.",
+     "supporting": [
+       {"doc": "02_weekly_status_2026-02-06.md", "quote": "Vendor ticket SP-7781 is open with ScanPoint support."},
+       {"doc": "04_weekly_status_2026-02-20.md", "quote": "ScanPoint provisioned the Events API v3 credentials and vendor ticket SP-7781 was closed."}
+     ]},
+    {"id": "E03", "category": "exact", "answerable": true, "expected_behavior": "answer",
+     "question": "Who owns milestone M3?",
+     "reference_answer": "Dana Okafor (frontend lead) owns M3, the dashboard beta at the Reno site.",
+     "supporting": [
+       {"doc": "01_beacon_project_plan_v1.pdf", "quote": "M3 Dashboard beta at the Reno site 13 March 2026 Dana Okafor"}
+     ]},
+    {"id": "E04", "category": "exact", "answerable": true, "expected_behavior": "answer",
+     "question": "What was the original target date for M4 UAT completion?",
+     "reference_answer": "3 April 2026 in the original plan (later moved to 10 April 2026).",
+     "supporting": [
+       {"doc": "01_beacon_project_plan_v1.pdf", "quote": "M4 User acceptance testing (UAT) complete 3 April 2026"}
+     ]},
+    {"id": "E05", "category": "exact", "answerable": true, "expected_behavior": "answer",
+     "question": "What was blocker B-2?",
+     "reference_answer": "The staging Kubernetes cluster was at 92% memory usage, so the pipeline test environment could not be deployed. Owner Tomas Reyes. Resolved on 13 February 2026 by decommissioning the legacy reporting pods.",
+     "supporting": [
+       {"doc": "02_weekly_status_2026-02-06.md", "quote": "The staging Kubernetes cluster is at 92% memory usage"},
+       {"doc": "04_weekly_status_2026-02-20.md", "quote": "Resolved on 13 February 2026. Tomas Reyes decommissioned the legacy reporting pods."}
+     ]},
+    {"id": "E06", "category": "exact", "answerable": true, "expected_behavior": "answer",
+     "question": "What does action item A2 from the architecture review require?",
+     "reference_answer": "Tomas Reyes was to provision RabbitMQ in staging by 18 February 2026, which depended on freeing staging capacity (B-2). Report #2 says it was provisioned on 18 February 2026.",
+     "supporting": [
+       {"doc": "03_architecture_review_2026-02-11.md", "quote": "A2: Tomas Reyes to provision RabbitMQ in staging by 18 February 2026."},
+       {"doc": "04_weekly_status_2026-02-20.md", "quote": "RabbitMQ was provisioned in staging on 18 February 2026 (action A2)."}
+     ]},
+    {"id": "E07", "category": "exact", "answerable": true, "expected_behavior": "answer",
+     "question": "What is risk R4 in the project plan?",
+     "reference_answer": "Label printer firmware at the Boise site may be incompatible with the new pallet labels; mitigation is to test labels at Boise before training. No later document reports on it.",
+     "supporting": [
+       {"doc": "01_beacon_project_plan_v1.pdf", "quote": "R4 Label printer firmware at the Boise site may be incompatible with new pallet labels."}
+     ]},
+    {"id": "E08", "category": "exact", "answerable": true, "expected_behavior": "answer",
+     "question": "Who is Sam Whitfield?",
+     "reference_answer": "The IT Security reviewer; owner of blocker B-3 (the BCN-201 SSO review).",
+     "supporting": [
+       {"doc": "01_beacon_project_plan_v1.pdf", "quote": "Sam Whitfield: IT Security reviewer."},
+       {"doc": "06_weekly_status_2026-03-06.md", "quote": "Status: Still open. Owner: Sam Whitfield (IT Security)."}
+     ]},
+    {"id": "P01", "category": "paraphrase", "answerable": true, "expected_behavior": "answer",
+     "question": "When did the vendor finally give us access to the scanner API?",
+     "reference_answer": "On 17 February 2026, when ScanPoint provisioned the Events API v3 credentials (B-1 resolved). They had been due on 23 January 2026.",
+     "supporting": [
+       {"doc": "04_weekly_status_2026-02-20.md", "quote": "Resolved on 17 February 2026. ScanPoint provisioned the Events API v3 credentials"}
+     ]},
+    {"id": "P02", "category": "paraphrase", "answerable": true, "expected_behavior": "answer",
+     "question": "Why did the team abandon the overnight data load?",
+     "reference_answer": "Shift supervisors need live pallet counts during a shift; the nightly batch would only show the previous night's data, which is too stale for shift planning. Grace Lindqvist decided on 11 February 2026 to switch to near-real-time streaming.",
+     "supporting": [
+       {"doc": "03_architecture_review_2026-02-11.md", "quote": "Reason: operations needs live counts during shifts."},
+       {"doc": "03_architecture_review_2026-02-11.md", "quote": "would only show the previous night's data, which is too stale for shift planning"}
+     ]},
+    {"id": "P03", "category": "paraphrase", "answerable": true, "expected_behavior": "answer",
+     "question": "How quickly does data now get from a handheld scan into the database?",
+     "reference_answer": "Current p95 latency from scan to database is 38 seconds (target: under 60 seconds from scan to dashboard).",
+     "supporting": [
+       {"doc": "06_weekly_status_2026-03-06.md", "quote": "Current p95 latency from scan to database is 38 seconds."},
+       {"doc": "03_architecture_review_2026-02-11.md", "quote": "with a target latency of under 60 seconds from scan to dashboard"}
+     ]},
+    {"id": "P04", "category": "paraphrase", "answerable": true, "expected_behavior": "answer",
+     "question": "How was room made on the test environment?",
+     "reference_answer": "Tomas Reyes decommissioned the legacy reporting pods, bringing staging memory usage down to 61% (B-2 resolved 13 February 2026).",
+     "supporting": [
+       {"doc": "04_weekly_status_2026-02-20.md", "quote": "Tomas Reyes decommissioned the legacy reporting pods. Staging memory usage is now 61%."}
+     ]},
+    {"id": "P05", "category": "paraphrase", "answerable": true, "expected_behavior": "answer",
+     "question": "Who is responsible for the sign-in security check, and when should it wrap up?",
+     "reference_answer": "Sam Whitfield (IT Security) owns the SSO review BCN-201; it is expected to finish around 20 March 2026.",
+     "supporting": [
+       {"doc": "06_weekly_status_2026-03-06.md", "quote": "The BCN-201 review has been in progress since 2 March 2026 and is expected to finish around 20 March 2026."},
+       {"doc": "05_steering_committee_2026-03-04.md", "quote": "He expects it to finish around 20 March 2026."}
+     ]},
+    {"id": "P06", "category": "paraphrase", "answerable": true, "expected_behavior": "answer",
+     "question": "What throughput did the pipeline handle in its final test?",
+     "reference_answer": "1,200 events per minute in the end-to-end load test it passed before completion on 5 March 2026.",
+     "supporting": [
+       {"doc": "06_weekly_status_2026-03-06.md", "quote": "after it passed the end-to-end load test at 1,200 events per minute"}
+     ]},
+    {"id": "P07", "category": "paraphrase", "answerable": true, "expected_behavior": "answer",
+     "question": "Which warehouse gets the new dashboard first?",
+     "reference_answer": "Reno. The beta is limited to the Reno site; Tacoma and Boise join at go-live. This was reaffirmed at the architecture review.",
+     "supporting": [
+       {"doc": "01_beacon_project_plan_v1.pdf", "quote": "The dashboard beta will be limited to the Reno site"},
+       {"doc": "03_architecture_review_2026-02-11.md", "quote": "The dashboard beta stays limited to the Reno site."}
+     ]},
+    {"id": "C01", "category": "comparison", "answerable": true, "expected_behavior": "answer",
+     "question": "What changed between the original plan and the latest update?",
+     "reference_answer": "M2 completed 5 March 2026 (planned 27 February); M3 moved from 13 to 27 March 2026; M4 moved from 3 to 10 April 2026; M6 go-live unchanged at 24 April 2026 but to be reconfirmed; decision D1 changed from nightly batch to near-real-time streaming; B-1 and B-2 resolved; B-3 (BCN-201) still open. M5 has no update.",
+     "supporting": [
+       {"doc": "01_beacon_project_plan_v1.pdf", "quote": "ScanPoint events loaded into PostgreSQL 27 February 2026"},
+       {"doc": "06_weekly_status_2026-03-06.md", "quote": "The scanner data pipeline was completed on 5 March 2026"},
+       {"doc": "06_weekly_status_2026-03-06.md", "quote": "Unchanged, to be reconfirmed in April"},
+       {"doc": "03_architecture_review_2026-02-11.md", "quote": "Beacon will use near-real-time streaming"}
+     ]},
+    {"id": "C02", "category": "comparison", "answerable": true, "expected_behavior": "answer",
+     "question": "Which milestones are delayed, and what caused the delays?",
+     "reference_answer": "M2 (streaming redesign agreed 11 February and late ScanPoint credentials B-1), M3 (needs live-update components and depends on M2), and M4 (SSO review BCN-201 pending). M5 and M6 are not reported as delayed.",
+     "supporting": [
+       {"doc": "06_weekly_status_2026-03-06.md", "quote": "because of the streaming redesign agreed on 11 February 2026 and the late ScanPoint credentials (B-1)"},
+       {"doc": "03_architecture_review_2026-02-11.md", "quote": "so the M3 dashboard beta moves from 13 March 2026 to 27 March 2026"},
+       {"doc": "06_weekly_status_2026-03-06.md", "quote": "because the SSO review (BCN-201) is still pending"}
+     ]},
+    {"id": "C03", "category": "comparison", "answerable": true, "expected_behavior": "answer",
+     "question": "How has the UAT completion date changed since the plan?",
+     "reference_answer": "From 3 April 2026 to 10 April 2026, approved by the steering committee on 4 March 2026 because UAT needs SSO and the BCN-201 review is pending. Owner Luis Ortega.",
+     "supporting": [
+       {"doc": "01_beacon_project_plan_v1.pdf", "quote": "M4 User acceptance testing (UAT) complete 3 April 2026"},
+       {"doc": "05_steering_committee_2026-03-04.md", "quote": "The committee approved moving M4 UAT completion to 10 April 2026."},
+       {"doc": "06_weekly_status_2026-03-06.md", "quote": "UAT completion moved to 10 April 2026"}
+     ]},
+    {"id": "C04", "category": "comparison", "answerable": true, "expected_behavior": "answer",
+     "question": "Is the go-live date still the same as in the original plan?",
+     "reference_answer": "Yes, 24 April 2026 is unchanged so far, but it is to be reconfirmed at the April steering committee.",
+     "supporting": [
+       {"doc": "01_beacon_project_plan_v1.pdf", "quote": "M6 Go-live at all sites 24 April 2026"},
+       {"doc": "05_steering_committee_2026-03-04.md", "quote": "The M6 go-live date of 24 April 2026 is kept for now and will be reconfirmed at the April steering committee."}
+     ]},
+    {"id": "C05", "category": "comparison", "answerable": true, "expected_behavior": "answer",
+     "question": "How does the data sync design today differ from what was originally planned?",
+     "reference_answer": "The plan (D1) used a nightly batch sync at 02:00; since 11 February 2026 the design is near-real-time streaming: ScanPoint webhooks to RabbitMQ to PostgreSQL, targeting under 60 seconds latency.",
+     "supporting": [
+       {"doc": "01_beacon_project_plan_v1.pdf", "quote": "Scanner events will be copied into PostgreSQL by a nightly batch sync"},
+       {"doc": "03_architecture_review_2026-02-11.md", "quote": "Beacon will use near-real-time streaming (ScanPoint webhooks to RabbitMQ to PostgreSQL) instead of the nightly batch sync."}
+     ]},
+    {"id": "C06", "category": "comparison", "answerable": true, "expected_behavior": "answer_without_inference",
+     "question": "Has the staff training milestone slipped?",
+     "reference_answer": "The documents do not say. The plan sets M5 staff training for 17 April 2026 (owner Maya Chen), and no progress update or meeting note reports on it, so it should not be called delayed.",
+     "supporting": [
+       {"doc": "01_beacon_project_plan_v1.pdf", "quote": "M5 Staff training at all three sites 17 April 2026 Maya Chen"}
+     ]},
+    {"id": "C07", "category": "comparison", "answerable": true, "expected_behavior": "answer",
+     "question": "When was the dashboard beta originally due and when is it expected now?",
+     "reference_answer": "Originally 13 March 2026; now on track for 27 March 2026.",
+     "supporting": [
+       {"doc": "01_beacon_project_plan_v1.pdf", "quote": "M3 Dashboard beta at the Reno site 13 March 2026"},
+       {"doc": "06_weekly_status_2026-03-06.md", "quote": "Dashboard beta remains on track for 27 March 2026."}
+     ]},
+    {"id": "X01", "category": "conflict", "answerable": true, "expected_behavior": "answer_with_conflict",
+     "question": "Do the sources disagree about when the data pipeline (M2) was completed?",
+     "reference_answer": "Yes. The 4 March 2026 steering committee notes record Maya Chen saying M2 was completed \"last week\"; Weekly Status Report #3 (6 March 2026) says it was completed on 5 March 2026.",
+     "supporting": [
+       {"doc": "05_steering_committee_2026-03-04.md", "quote": "Maya Chen reported that the scanner data pipeline (M2) was completed last week"},
+       {"doc": "06_weekly_status_2026-03-06.md", "quote": "The scanner data pipeline was completed on 5 March 2026"}
+     ]},
+    {"id": "X02", "category": "conflict", "answerable": true, "expected_behavior": "answer_with_conflict",
+     "question": "When was the scanner data pipeline finished?",
+     "reference_answer": "Report #3 (6 March 2026) says 5 March 2026, but the 4 March 2026 steering committee notes say it was completed the previous week. The answer should surface both.",
+     "supporting": [
+       {"doc": "06_weekly_status_2026-03-06.md", "quote": "The scanner data pipeline was completed on 5 March 2026"},
+       {"doc": "05_steering_committee_2026-03-04.md", "quote": "Maya Chen reported that the scanner data pipeline (M2) was completed last week"}
+     ]},
+    {"id": "X03", "category": "conflict", "answerable": true, "expected_behavior": "answer_with_conflict",
+     "question": "Was M2 already done at the time of the March steering committee?",
+     "reference_answer": "The sources disagree: the 4 March notes say it was completed the previous week; Report #3 says it was completed on 5 March 2026, the day after the meeting.",
+     "supporting": [
+       {"doc": "05_steering_committee_2026-03-04.md", "quote": "Maya Chen reported that the scanner data pipeline (M2) was completed last week"},
+       {"doc": "06_weekly_status_2026-03-06.md", "quote": "The scanner data pipeline was completed on 5 March 2026"}
+     ]},
+    {"id": "U01", "category": "unanswerable", "answerable": false, "expected_behavior": "abstain",
+     "question": "What is the approved project budget?",
+     "reference_answer": "Not stated. The plan says the budget is tracked separately by Finance and is not included.",
+     "supporting": [
+       {"doc": "01_beacon_project_plan_v1.pdf", "quote": "The project budget is tracked separately by Finance and is not included in this plan."}
+     ]},
+    {"id": "U02", "category": "unanswerable", "answerable": false, "expected_behavior": "abstain",
+     "question": "How many handheld scanners are deployed at the Tacoma warehouse?",
+     "reference_answer": "Not stated in any document.",
+     "supporting": []},
+    {"id": "U03", "category": "unanswerable", "answerable": false, "expected_behavior": "abstain",
+     "question": "What did the April steering committee decide about go-live?",
+     "reference_answer": "No April steering committee notes are available. The documents only say the go-live date will be reconfirmed at that meeting.",
+     "supporting": []},
+    {"id": "U04", "category": "unanswerable", "answerable": false, "expected_behavior": "abstain",
+     "question": "Who replaced Priya Raman as integration lead?",
+     "reference_answer": "Nothing in the documents says Priya Raman was replaced; the question's premise is unsupported.",
+     "supporting": []},
+    {"id": "U05", "category": "unanswerable", "answerable": false, "expected_behavior": "abstain",
+     "question": "What is the contract value with ScanPoint?",
+     "reference_answer": "Not stated in any document.",
+     "supporting": []}
+  ]
+}
