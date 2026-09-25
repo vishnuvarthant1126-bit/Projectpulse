@@ -4,11 +4,15 @@ user prompt and JSON schema. API keys are read from server-side settings only.""
 from __future__ import annotations
 
 import json
+import logging
+import time
 from typing import Any, Protocol
 
 import httpx
 
 from .config import Settings
+
+log = logging.getLogger("projectpulse.llm")
 
 
 class LLMError(Exception):
@@ -89,9 +93,15 @@ class OpenAICompatibleLLM:
                 r = httpx.post(self.url, headers=self.headers, json=body, timeout=self.s.llm_timeout_s)
             except httpx.HTTPError as exc:
                 raise LLMError(f"Could not reach the answer model: {type(exc).__name__}") from exc
-            if r.status_code == 400:
-                last_status = 400
-                continue  # try a simpler output mode
+            if r.status_code == 400 or r.status_code >= 500:
+                # 400: this server rejects the output mode. 5xx: some servers (e.g. Gemini's
+                # OpenAI endpoint) fail on large JSON schemas or are briefly overloaded. Either
+                # way, retry with the next, simpler output mode after a short pause.
+                last_status = r.status_code
+                log.warning("answer model HTTP %s (%s); trying a simpler output mode", r.status_code, _error_hint(r))
+                if r.status_code >= 500:
+                    time.sleep(1.0)
+                continue
             if r.status_code == 429:
                 raise LLMError("The answer model is busy (rate limit reached). Please try again in a minute.")
             if r.status_code >= 400:
@@ -103,7 +113,24 @@ class OpenAICompatibleLLM:
             if msg.get("refusal"):
                 raise LLMError("The answer model declined to answer this request.")
             return msg.get("content") or ""
+        if last_status and last_status >= 500:
+            raise LLMError(
+                f"The answer model is temporarily unavailable (HTTP {last_status}). Please try again shortly."
+            )
         raise LLMError(f"Answer model returned HTTP {last_status}")
+
+
+def _error_hint(r) -> str:
+    """Short provider error message for logs (never includes document text)."""
+    try:
+        data = r.json()
+        if isinstance(data, list):
+            data = data[0]
+        err = data.get("error", data)
+        msg = err.get("message") if isinstance(err, dict) else str(err)
+        return (msg or "")[:200]
+    except Exception:
+        return ""
 
 
 def build_llm(s: Settings) -> LLM | None:

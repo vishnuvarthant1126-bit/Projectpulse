@@ -78,3 +78,22 @@ def test_rate_limit_and_auth_errors_are_readable(gemini_settings, monkeypatch):
     monkeypatch.setattr(httpx, "post", lambda *a, **k: FakeResponse(401))
     with pytest.raises(LLMError, match="HTTP 401"):
         OpenAICompatibleLLM(gemini_settings).complete_json("s", "u", {})
+
+
+def test_server_errors_fall_back_then_report_unavailable(gemini_settings, monkeypatch):
+    monkeypatch.setattr("app.llm.time.sleep", lambda s: None)
+    calls = []
+
+    def fake_post(url, headers, json, timeout):  # noqa: A002
+        calls.append(json.get("response_format", {}).get("type"))
+        if calls[-1] == "json_schema":
+            return FakeResponse(503, {"error": {"message": "The model is overloaded."}})
+        return ok('{"answer_type": "answer"}')
+
+    monkeypatch.setattr(httpx, "post", fake_post)
+    assert parse_json(OpenAICompatibleLLM(gemini_settings).complete_json("s", "u", {})) == {"answer_type": "answer"}
+    assert calls == ["json_schema", "json_object"]
+
+    monkeypatch.setattr(httpx, "post", lambda *a, **k: FakeResponse(503, [{"error": {"message": "overloaded"}}]))
+    with pytest.raises(LLMError, match="temporarily unavailable"):
+        OpenAICompatibleLLM(gemini_settings).complete_json("s", "u", {})
