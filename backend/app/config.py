@@ -47,7 +47,10 @@ class Settings(BaseSettings):
     llm_model: str = "claude-sonnet-5"
     llm_api_key: SecretStr | None = None
     llm_base_url: str | None = None  # defaults per provider
-    llm_max_tokens: int = 2500
+    llm_max_tokens: int = 8192  # generous: "thinking" models count reasoning tokens against this
+    # OpenAI-compatible servers only: none|low|medium|high. Defaults to "low" for Gemini so its
+    # thinking step doesn't use up the output budget; leave unset for other servers.
+    llm_reasoning_effort: str | None = None
     llm_timeout_s: float = 90.0
     llm_temperature: float = 0.0
 

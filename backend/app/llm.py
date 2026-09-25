@@ -74,13 +74,21 @@ class OpenAICompatibleLLM:
         so fall back to plain JSON mode with the schema in the prompt, then to no
         response_format at all. The backend validates the result either way."""
         schema_hint = "\n\nReturn only a JSON object that matches this JSON schema:\n" + json.dumps(schema)
+        effort = self.s.llm_reasoning_effort
+        if effort is None and "generativelanguage.googleapis.com" in self.url:
+            effort = "low"
+        # (system prompt, response_format, send reasoning_effort?)
         attempts = [
-            (system, {"type": "json_schema", "json_schema": {"name": "answer", "schema": schema, "strict": True}}),
-            (system + schema_hint, {"type": "json_object"}),
-            (system + schema_hint, None),
+            (
+                system,
+                {"type": "json_schema", "json_schema": {"name": "answer", "schema": schema, "strict": True}},
+                True,
+            ),
+            (system + schema_hint, {"type": "json_object"}, True),
+            (system + schema_hint, None, False),
         ]
         last_status = None
-        for sys_prompt, response_format in attempts:
+        for sys_prompt, response_format, with_effort in attempts:
             body: dict[str, Any] = {
                 "model": self.s.llm_model,
                 "temperature": self.s.llm_temperature,
@@ -89,6 +97,8 @@ class OpenAICompatibleLLM:
             }
             if response_format:
                 body["response_format"] = response_format
+            if effort and with_effort:
+                body["reasoning_effort"] = effort
             try:
                 r = httpx.post(self.url, headers=self.headers, json=body, timeout=self.s.llm_timeout_s)
             except httpx.HTTPError as exc:
@@ -109,10 +119,18 @@ class OpenAICompatibleLLM:
             data = r.json()
             if isinstance(data, list):  # some gateways wrap the response in a list
                 data = data[0]
-            msg = data["choices"][0]["message"]
+            choice = data["choices"][0]
+            msg = choice.get("message") or {}
             if msg.get("refusal"):
                 raise LLMError("The answer model declined to answer this request.")
-            return msg.get("content") or ""
+            content = msg.get("content") or ""
+            if not content.strip():
+                reason = choice.get("finish_reason")
+                log.warning("answer model returned empty content (finish_reason=%s)", reason)
+                if reason == "length":
+                    raise LLMError("The answer model ran out of output tokens (raise LLM_MAX_TOKENS).")
+                raise LLMError(f"The answer model returned an empty response (finish_reason={reason}).")
+            return content
         if last_status and last_status >= 500:
             raise LLMError(
                 f"The answer model is temporarily unavailable (HTTP {last_status}). Please try again shortly."

@@ -97,3 +97,24 @@ def test_server_errors_fall_back_then_report_unavailable(gemini_settings, monkey
     monkeypatch.setattr(httpx, "post", lambda *a, **k: FakeResponse(503, [{"error": {"message": "overloaded"}}]))
     with pytest.raises(LLMError, match="temporarily unavailable"):
         OpenAICompatibleLLM(gemini_settings).complete_json("s", "u", {})
+
+
+def test_gemini_gets_low_reasoning_effort_and_empty_content_is_explained(gemini_settings, monkeypatch):
+    bodies = []
+
+    def fake_post(url, headers, json, timeout):  # noqa: A002
+        bodies.append(json)
+        return FakeResponse(200, {"choices": [{"message": {"content": ""}, "finish_reason": "length"}]})
+
+    monkeypatch.setattr(httpx, "post", fake_post)
+    with pytest.raises(LLMError, match="ran out of output tokens"):
+        OpenAICompatibleLLM(gemini_settings).complete_json("s", "u", {})
+    assert bodies[0]["reasoning_effort"] == "low" and bodies[0]["max_tokens"] == 8192
+
+
+def test_reasoning_effort_not_sent_to_other_servers(monkeypatch):
+    s = Settings(llm_provider="openai", llm_model="gpt-x", llm_api_key="k", _env_file=None)
+    bodies = []
+    monkeypatch.setattr(httpx, "post", lambda url, headers, json, timeout: bodies.append(json) or ok("{}"))
+    OpenAICompatibleLLM(s).complete_json("s", "u", {})
+    assert "reasoning_effort" not in bodies[0]

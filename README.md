@@ -178,7 +178,7 @@ All settings are environment variables (see [`.env.example`](.env.example)). The
 ## Tests
 
 ```bash
-cd backend && pytest            # 60 tests, about 3 s; uses a deterministic hash embedder, no network
+cd backend && pytest            # 62 tests, about 3 s; uses a deterministic hash embedder, no network
 ruff check app tests
 cd ../frontend && npm run lint && npx tsc --noEmit && npm run build
 ```
