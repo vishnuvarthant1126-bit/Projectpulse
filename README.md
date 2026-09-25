@@ -4,7 +4,7 @@
 
 **Understand what changed. See what needs attention.**
 
-**Live demo:** _link added after the first deployment_ · read-only, fictional sample project, runs on free
+**Live demo: [projectpulse-iota.vercel.app](https://projectpulse-iota.vercel.app)** · read-only, fictional sample project, runs on free
 hosting (the first visit after a quiet period can take up to a minute while the API wakes up).
 
 ProjectPulse is a local web app for project plans, progress reports and meeting notes. You upload
